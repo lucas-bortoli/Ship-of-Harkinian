@@ -461,3 +461,6 @@ soh/properties.h
 /clang-format
 /clang-format.exe
 *.o2r
+
+/discord_social_sdk/*
+!/discord_social_sdk/.template

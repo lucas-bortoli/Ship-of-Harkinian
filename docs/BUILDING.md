@@ -18,6 +18,18 @@ Doing so should also check one of the Windows SDKs by default.  Then, in the ins
 
 It is recommended that you install Python and Git standalone, the install process in VS Installer has given some issues in the past.
 
+### Discord Rich Presence
+
+This Windows x64 fork requires Discord's C++ Social SDK to build. Download the SDK from the Discord Developer Portal and extract it to `discord_social_sdk` in the repository root. The extracted directory must contain:
+
+* `include/discordpp.h`
+* `lib/release/discord_partner_sdk.lib`
+* `bin/release/discord_partner_sdk.dll`
+
+If you extract the SDK elsewhere, pass its directory during CMake configuration with `-DSOH_DISCORD_SDK_ROOT="C:/path/to/discord_social_sdk"`. CMake reports an error if the SDK files are missing. The SDK binaries are ignored by Git; do not add them to commits.
+
+The normal build copies the SDK DLL beside the game executable and includes it in Windows installation packages. In game, **Settings > General > Discord Rich Presence** controls whether activity is shared. It is enabled by default and shows the title screen, save selection, or current scene, plus Link's age during gameplay and elapsed time since the game started.
+
 1. Clone the Ship of Harkinian repository
 
 _Note: Be sure to either clone with the ``--recursive`` flag or do ``git submodule update --init`` after cloning to pull in the libultraship and torch submodules!_

@@ -14,6 +14,12 @@ set(SPDLOG_LEVEL_OFF 6)
 set(SPDLOG_MIN_CUTOFF SPDLOG_LEVEL_TRACE CACHE STRING "cutoff at trace")
 option(USE_ASAN "Use Address Sanitizer" OFF)
 
+set(SOH_DISCORD_APPLICATION_ID "1562609386956791878" CACHE STRING "Discord application ID used for Rich Presence")
+set(SOH_DISCORD_SDK_ROOT "${CMAKE_SOURCE_DIR}/discord_social_sdk" CACHE PATH "Path to the extracted Discord Social SDK")
+if(NOT SOH_DISCORD_SDK_ROOT)
+    set(SOH_DISCORD_SDK_ROOT "${CMAKE_SOURCE_DIR}/discord_social_sdk" CACHE PATH "Path to the extracted Discord Social SDK" FORCE)
+endif()
+
 option(SUPPRESS_WARNINGS "Suppress warnings in LUS and src (decomp)" ON)
 if(SUPPRESS_WARNINGS)
     MESSAGE("Suppressing warnings in LUS and src")

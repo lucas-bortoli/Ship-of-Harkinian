@@ -15,6 +15,7 @@ typedef enum FileType {
 
 namespace SohUtils {
 const std::string& GetSceneName(int32_t scene);
+bool IsValidScene(int32_t scene);
 
 const std::string& GetItemName(int32_t item);
 

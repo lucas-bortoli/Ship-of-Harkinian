@@ -129,6 +129,13 @@ void SohMenu::AddMenuSettings() {
     AddSidebarEntry("Settings", "General", 2);
     WidgetPath path = { "Settings", "General", SECTION_COLUMN_1 };
 
+    AddWidget(path, "Discord Rich Presence", WIDGET_CVAR_CHECKBOX)
+        .CVar(CVAR_SETTING("DiscordRichPresence"))
+        .RaceDisable(false)
+        .Options(CheckboxOptions()
+                     .DefaultValue(1)
+                     .Tooltip("Shares your current area and Link's age on Discord while enabled."));
+
     // General - Settings
     AddWidget(path, "Menu Settings", WIDGET_SEPARATOR_TEXT);
     AddWidget(path, "Menu Theme", WIDGET_CVAR_COMBOBOX)

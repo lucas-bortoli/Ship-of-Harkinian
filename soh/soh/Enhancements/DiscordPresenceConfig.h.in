@@ -1,0 +1,5 @@
+#pragma once
+
+#include <cstdint>
+
+inline constexpr std::uint64_t SOH_DISCORD_CONFIGURED_APPLICATION_ID = @SOH_DISCORD_APPLICATION_ID@ULL;

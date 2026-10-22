@@ -700,6 +700,10 @@ const std::string& SohUtils::GetSceneName(int32_t scene) {
     return sceneNames[scene];
 }
 
+bool SohUtils::IsValidScene(int32_t scene) {
+    return scene >= 0 && static_cast<size_t>(scene) < sceneNames.size();
+}
+
 const std::string& SohUtils::GetItemName(int32_t item) {
     const std::vector<std::string>* currentItemNames = nullptr;
 
