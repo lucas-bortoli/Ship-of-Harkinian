@@ -84,6 +84,19 @@ cd "build/x64"
 & 'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
 ```
 
+Package filenames end in `-rich-presence`, for example `Ship-9.3.1-win64-rich-presence.zip`.
+
+### GitHub Actions
+
+The `generate-builds` workflow builds and packages Windows x64, including `soh.o2r` and the Discord runtime DLL. It runs on pushes, pull requests from branches in this repository, and manual dispatch. The downloadable artifact is named `soh-windows-rich-presence`. Tagged builds require the `-rich-presence` suffix, for example `9.3.1-rich-presence`. The workflow produces build artifacts; it does not publish a GitHub Release.
+
+To enable automated SDK setup, go to **Settings > Secrets and variables > Actions** in your GitHub repository and add:
+
+* Repository secret `DISCORD_SOCIAL_SDK_URL`: the direct ZIP download URL for a specific standalone C++ SDK version from the [Discord Developer Portal](https://discord.com/developers/applications/select/social-sdk/downloads).
+* Repository variable `DISCORD_SOCIAL_SDK_SHA256`: the ZIP's SHA-256 hash. Calculate it from the downloaded ZIP with `Get-FileHash -Algorithm SHA256 -LiteralPath 'C:\path\to\DiscordSocialSdk.zip'`.
+
+CI downloads the ZIP, verifies the checksum, validates the Windows SDK files, and passes the extracted SDK directory to CMake. Keep the URL and checksum matched when updating SDK versions. No SDK binaries need to be committed. Pull requests from forks skip the build because GitHub does not provide repository secrets to those runs; test trusted contributions from a branch in this repository.
+
 ### Additional CMake Targets
 #### Clean
 ```powershell
