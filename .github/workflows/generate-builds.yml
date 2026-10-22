@@ -10,8 +10,6 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-windows:
-    # Fork pull requests cannot access the SDK download secret.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: windows-latest
     defaults:
       run:
@@ -27,11 +25,6 @@ jobs:
       uses: actions/checkout@v7
       with:
         submodules: true
-    - name: Set up Discord Social SDK
-      env:
-        DISCORD_SOCIAL_SDK_URL: ${{ secrets.DISCORD_SOCIAL_SDK_URL }}
-        DISCORD_SOCIAL_SDK_SHA256: ${{ vars.DISCORD_SOCIAL_SDK_SHA256 }}
-      run: ./.github/scripts/setup-discord-sdk.ps1
     - name: Install dependencies
       run: |
         choco install ninja -y
@@ -67,7 +60,7 @@ jobs:
         cmake -S . -B build-windows -G Ninja
         -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_BUILD_TYPE:STRING=Release
         -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        -DBUILD_REMOTE_CONTROL=1 "-DSOH_DISCORD_SDK_ROOT=$env:SOH_DISCORD_SDK_ROOT"
+        -DBUILD_REMOTE_CONTROL=1
     - name: Build SoH and soh.o2r
       run: cmake --build build-windows --config Release --parallel 10
     - name: Package SoH
@@ -78,7 +71,7 @@ jobs:
         $packages = @(Get-ChildItem -Path '_packages/*-rich-presence.zip')
         if ($packages.Count -ne 1) { throw 'Expected one Windows package ending in -rich-presence.zip.' }
         Expand-Archive -LiteralPath $packages[0].FullName -DestinationPath soh-windows-rich-presence
-        foreach ($file in 'soh.exe', 'soh.o2r', 'discord_partner_sdk.dll') {
+        foreach ($file in 'soh.exe', 'soh.o2r', 'licenses/discord-rpc/LICENSE.txt', 'licenses/rapidjson/LICENSE.txt') {
           if (-not (Test-Path -LiteralPath "soh-windows-rich-presence/$file" -PathType Leaf)) {
             throw "The Windows package is missing $file."
           }

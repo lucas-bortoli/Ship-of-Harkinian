@@ -463,4 +463,3 @@ soh/properties.h
 *.o2r
 
 /discord_social_sdk/*
-!/discord_social_sdk/.template

@@ -229,30 +229,18 @@ set(ALL_FILES
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
 if(NOT WIN32 OR NOT "${CMAKE_SIZEOF_VOID_P}" STREQUAL "8" OR SOH_WINDOWS_ARM64)
-    message(FATAL_ERROR "This Ship of Harkinian fork requires Windows x64 and the Discord Social SDK")
+    message(FATAL_ERROR "This Ship of Harkinian fork requires Windows x64")
 endif()
 
 if(NOT SOH_DISCORD_APPLICATION_ID MATCHES "^[0-9]+$")
     message(FATAL_ERROR "SOH_DISCORD_APPLICATION_ID must be a numeric Discord application ID")
 endif()
 
-set(DISCORD_SDK_INCLUDE_DIR "${SOH_DISCORD_SDK_ROOT}/include")
-set(DISCORD_SDK_LIBRARY "${SOH_DISCORD_SDK_ROOT}/lib/release/discord_partner_sdk.lib")
-set(DISCORD_SDK_RUNTIME "${SOH_DISCORD_SDK_ROOT}/bin/release/discord_partner_sdk.dll")
-foreach(required_file IN ITEMS "${DISCORD_SDK_INCLUDE_DIR}/discordpp.h" "${DISCORD_SDK_LIBRARY}" "${DISCORD_SDK_RUNTIME}")
-    if(NOT EXISTS "${required_file}")
-        message(FATAL_ERROR "Discord Rich Presence requires '${required_file}'. Download and extract Discord's C++ Social SDK to '${SOH_DISCORD_SDK_ROOT}' or set SOH_DISCORD_SDK_ROOT to its location.")
-    endif()
-endforeach()
-
 configure_file(soh/Enhancements/DiscordPresenceConfig.h.in "${CMAKE_CURRENT_BINARY_DIR}/DiscordPresenceConfig.h" @ONLY)
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}" "${DISCORD_SDK_INCLUDE_DIR}")
-target_link_libraries(${PROJECT_NAME} PRIVATE "${DISCORD_SDK_LIBRARY}")
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DISCORD_SDK_RUNTIME}" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-    VERBATIM
-)
-install(FILES "${DISCORD_SDK_RUNTIME}" DESTINATION . COMPONENT ship)
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+include("${CMAKE_SOURCE_DIR}/CMake/DiscordRPC.cmake")
+target_include_directories(${PROJECT_NAME} PRIVATE "${discord_rpc_SOURCE_DIR}/include")
+target_link_libraries(${PROJECT_NAME} PRIVATE discord-rpc)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
 use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")

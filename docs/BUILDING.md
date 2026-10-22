@@ -20,15 +20,9 @@ It is recommended that you install Python and Git standalone, the install proces
 
 ### Discord Rich Presence
 
-This Windows x64 fork requires Discord's C++ Social SDK to build. Download the SDK from the Discord Developer Portal and extract it to `discord_social_sdk` in the repository root. The extracted directory must contain:
+This Windows x64 fork builds Discord Rich Presence with the MIT-licensed [discord-rpc](https://github.com/discord/discord-rpc) client and [RapidJSON](https://github.com/Tencent/rapidjson). CMake fetches both public repositories at pinned commits listed in [`CMake/DiscordRPC.cmake`](../CMake/DiscordRPC.cmake) and compiles the RPC client into the game; no Discord SDK download, local SDK directory, or extra runtime DLL is needed. The upstream RPC library is deprecated, so compatibility fixes may become this fork's responsibility. The dependency license notices are included in the distributable under `licenses/`.
 
-* `include/discordpp.h`
-* `lib/release/discord_partner_sdk.lib`
-* `bin/release/discord_partner_sdk.dll`
-
-If you extract the SDK elsewhere, pass its directory during CMake configuration with `-DSOH_DISCORD_SDK_ROOT="C:/path/to/discord_social_sdk"`. CMake reports an error if the SDK files are missing. The SDK binaries are ignored by Git; do not add them to commits.
-
-The normal build copies the SDK DLL beside the game executable and includes it in Windows installation packages. In game, **Settings > General > Discord Rich Presence** controls whether activity is shared. It is enabled by default and shows the title screen, save selection, or current scene, plus Link's age during gameplay and elapsed time since the game started.
+Players need the Discord desktop client running to see activity. In game, **Settings > General > Discord Rich Presence** controls whether activity is shared. It is enabled by default and shows the title screen, save selection, or current scene, plus Link's age during gameplay and elapsed time since the game started.
 
 1. Clone the Ship of Harkinian repository
 
@@ -88,14 +82,9 @@ Package filenames end in `-rich-presence`, for example `Ship-9.3.1-win64-rich-pr
 
 ### GitHub Actions
 
-The `generate-builds` workflow builds and packages Windows x64, including `soh.o2r` and the Discord runtime DLL. It runs on pushes, pull requests from branches in this repository, and manual dispatch. The downloadable artifact is named `soh-windows-rich-presence`. Tagged builds require the `-rich-presence` suffix, for example `9.3.1-rich-presence`. The workflow produces build artifacts; it does not publish a GitHub Release.
+The `generate-builds` workflow builds and packages Windows x64, including `soh.o2r` and the dependency license notices. It runs on pushes, pull requests (including forks), and manual dispatch. The downloadable artifact is named `soh-windows-rich-presence`. Tagged builds require the `-rich-presence` suffix, for example `9.3.1-rich-presence`. The workflow produces build artifacts; it does not publish a GitHub Release.
 
-To enable automated SDK setup, go to **Settings > Secrets and variables > Actions** in your GitHub repository and add:
-
-* Repository secret `DISCORD_SOCIAL_SDK_URL`: the direct ZIP download URL for a specific standalone C++ SDK version from the [Discord Developer Portal](https://discord.com/developers/applications/select/social-sdk/downloads).
-* Repository variable `DISCORD_SOCIAL_SDK_SHA256`: the ZIP's SHA-256 hash. Calculate it from the downloaded ZIP with `Get-FileHash -Algorithm SHA256 -LiteralPath 'C:\path\to\DiscordSocialSdk.zip'`.
-
-CI downloads the ZIP, verifies the checksum, validates the Windows SDK files, and passes the extracted SDK directory to CMake. Keep the URL and checksum matched when updating SDK versions. No SDK binaries need to be committed. Pull requests from forks skip the build because GitHub does not provide repository secrets to those runs; test trusted contributions from a branch in this repository.
+The Discord SDK download secret `DISCORD_SOCIAL_SDK_URL` and variable `DISCORD_SOCIAL_SDK_SHA256` are obsolete and can be removed manually under **Settings > Secrets and variables > Actions**. CI no longer reads them.
 
 ### Additional CMake Targets
 #### Clean
