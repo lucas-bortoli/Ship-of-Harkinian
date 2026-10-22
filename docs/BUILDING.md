@@ -82,7 +82,7 @@ Package filenames end in `-rich-presence`, for example `Ship-9.3.1-win64-rich-pr
 
 ### GitHub Actions
 
-The `generate-builds` workflow builds and packages Windows x64, including `soh.o2r` and the dependency license notices. It runs on pushes, pull requests (including forks), and manual dispatch. The downloadable artifact is named `soh-windows-rich-presence`. Tagged builds require the `-rich-presence` suffix, for example `9.3.1-rich-presence`. The workflow produces build artifacts; it does not publish a GitHub Release.
+The `generate-builds` workflow builds and packages Windows x64, including `soh.o2r` and the dependency license notices. It runs on pushes, pull requests (including forks), and manual dispatch. The downloadable Actions artifact is named `soh-windows-rich-presence`. Tagged builds require the `-rich-presence` suffix, for example `9.3.1-rich-presence`; after a successful build, the workflow creates or updates a published GitHub Release with the ZIP and generated release notes. Retagging an existing release replaces its package asset.
 
 The Discord SDK download secret `DISCORD_SOCIAL_SDK_URL` and variable `DISCORD_SOCIAL_SDK_SHA256` are obsolete and can be removed manually under **Settings > Secrets and variables > Actions**. CI no longer reads them.
 
